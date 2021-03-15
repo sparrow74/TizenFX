@@ -133,6 +133,25 @@ namespace Tizen.NUI.BaseComponents
         private FinishedCallbackDelegate videoViewFinishedCallbackDelegate;
         private EventHandler<FinishedEventArgs> videoViewFinishedEventHandler;
 
+        // <summary>
+        /// Enumeration for the synchronization is ended between UI(transparent hole) and video player.
+        /// It is used when VideoView is created.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public enum VideoSyncMode
+        {
+            /// <summary>
+            /// Disable of the synchronization.
+            /// </summary>
+            [EditorBrowsable(EditorBrowsableState.Never)]
+            DISABLED = 0,
+            /// <summary>
+            /// Enable of the synchronization.
+            /// </summary>
+            [EditorBrowsable(EditorBrowsableState.Never)]
+            ENABLED
+        }
+
         /// <summary>
         /// Creates an initialized VideoView.
         /// </summary>
@@ -199,6 +218,17 @@ namespace Tizen.NUI.BaseComponents
         /// <param name="swCodec">Video rendering by H/W codec if false.</param>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public VideoView(Uri uri, bool swCodec) : this(Interop.VideoView.New((uri == null) ? String.Empty : uri.AbsoluteUri, swCodec), true)
+        {
+            if (NDalicPINVOKE.SWIGPendingException.Pending) throw NDalicPINVOKE.SWIGPendingException.Retrieve();
+        }
+
+        /// <summary>
+        /// CCreates an initialized VideoView with synchronization mode.<br />
+        /// The syncMode is for synchronization between UI(transparent hole) and underlay video.<br />
+        /// </summary>
+        /// <param name="syncMode">syncMode The synchronization mode between the UI (transparent hole) and VideoPlayer.</param>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public VideoView(VideoSyncMode syncMode) : this(Interop.VideoView.New(syncMode), true)
         {
             if (NDalicPINVOKE.SWIGPendingException.Pending) throw NDalicPINVOKE.SWIGPendingException.Retrieve();
         }
@@ -394,6 +424,126 @@ namespace Tizen.NUI.BaseComponents
         {
             Interop.VideoView.Backward(SwigCPtr, millisecond);
             if (NDalicPINVOKE.SWIGPendingException.Pending) throw NDalicPINVOKE.SWIGPendingException.Retrieve();
+        }
+
+        /// <summary>
+        /// Play the resize or move animation with synchronization between UI(transparent hole) and video player.
+        /// The resize and move animation's play() function is called.
+        /// If the animation is played, UI and video player will work synchronization.
+        /// </summary>
+        /// <param name="animation">The animation for video view's resize or move.</param>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public void PlayAnimation(Animation animation)
+        {
+            Interop.VideoView.PlayAnimation(SwigCPtr, animation);
+            if (NDalicPINVOKE.SWIGPendingException.Pending) throw NDalicPINVOKE.SWIGPendingException.Retrieve();
+        }
+
+        /// <summary>
+        /// Raise view above all other sibling views.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public void RaiseToTop()
+        {
+            var parentChildren = GetParent()?.Children;
+
+            if (parentChildren != null)
+            {
+                parentChildren.Remove(this);
+                parentChildren.Add(this);
+
+                LayoutGroup layout = Layout as LayoutGroup;
+                layout?.ChangeLayoutSiblingOrder(parentChildren.Count - 1);
+
+                Interop.VideoView.RaiseToTop(SwigCPtr);
+                if (NDalicPINVOKE.SWIGPendingException.Pending) throw NDalicPINVOKE.SWIGPendingException.Retrieve();
+            }            
+        }
+
+        /// <summary>
+        /// Lower view to the bottom of all other sibling views.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public void LowerToBottom()
+        {
+            var parentChildren = GetParent()?.Children;
+
+            if (parentChildren != null)
+            {
+                parentChildren.Remove(this);
+                parentChildren.Insert(0, this);
+
+                LayoutGroup layout = Layout as LayoutGroup;
+                layout?.ChangeLayoutSiblingOrder(0);
+
+                Interop.VideoView.LowerToBottom(SwigCPtr);
+                if (NDalicPINVOKE.SWIGPendingException.Pending) throw NDalicPINVOKE.SWIGPendingException.Retrieve();
+            }
+        }
+
+        /// <summary>
+        /// Raises the view above the target view.
+        /// </summary>
+        /// <param name="target">target The target view</param>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public void RaiseAbove(View target)
+        {
+            var parentChildren = GetParent()?.Children;
+
+            if (parentChildren != null)
+            {
+                int currentIndex = parentChildren.IndexOf(this);
+                int targetIndex = parentChildren.IndexOf(target);
+
+                if (currentIndex < 0 || targetIndex < 0 ||
+                    currentIndex >= parentChildren.Count || targetIndex >= parentChildren.Count)
+                {
+                    NUILog.Error("index should be bigger than 0 and less than children of layer count");
+                    return;
+                }
+                // If the currentIndex is less than the target index and the target has the same parent.
+                if (currentIndex < targetIndex)
+                {
+                    parentChildren.Remove(this);
+                    parentChildren.Insert(targetIndex, this);
+
+                    Interop.VideoView.RaiseAbove(SwigCPtr, View.getCPtr(target));
+                    if (NDalicPINVOKE.SWIGPendingException.Pending) throw NDalicPINVOKE.SWIGPendingException.Retrieve();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Lower the view to below the target view.
+        /// </summary>
+        /// <param name="target">target The target view</param>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public void LowerBelow(View target)
+        {
+            var parentChildren = GetParent()?.Children;
+
+            if (parentChildren != null)
+            {
+                int currentIndex = parentChildren.IndexOf(this);
+                int targetIndex = parentChildren.IndexOf(target);
+                if (currentIndex < 0 || targetIndex < 0 ||
+                   currentIndex >= parentChildren.Count || targetIndex >= parentChildren.Count)
+                {
+                    NUILog.Error("index should be bigger than 0 and less than children of layer count");
+                    return;
+                }
+
+                // If the currentIndex is not already the 0th index and the target has the same parent.
+                if ((currentIndex != 0) && (targetIndex != -1) &&
+                    (currentIndex > targetIndex))
+                {
+                    parentChildren.Remove(this);
+                    parentChildren.Insert(targetIndex, this);
+
+                    Interop.VideoView.LowerBelow(SwigCPtr, View.getCPtr(target));
+                    if (NDalicPINVOKE.SWIGPendingException.Pending) throw NDalicPINVOKE.SWIGPendingException.Retrieve();
+                }
+            }
         }
 
         internal VideoViewSignal FinishedSignal()
