@@ -495,6 +495,50 @@ namespace Tizen.NUI
         }
 
         /// <summary>
+        /// Enumeration for rendering mode
+        /// This Enumeration is used to choose the rendering mode.
+        /// It has two options.
+        /// One of them is continuous mode. It is rendered continuously.
+        /// The other is on demand mode. It is rendered by application.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public enum GLWindowRenderingMode
+        {
+            /// <summary>
+            /// continuous mode
+            /// </summary>
+            [EditorBrowsable(EditorBrowsableState.Never)]
+            Continuous = 0,
+
+            /// <summary>
+            /// on demand by application
+            /// </summary>
+            [EditorBrowsable(EditorBrowsableState.Never)]
+            OnDemand = 1
+        }
+
+        /// <summary>
+        /// Gets or sets a GLWindow Rendeirng Mode
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public GLWindowRenderingMode RenderingMode
+        {
+            [EditorBrowsable(EditorBrowsableState.Never)]
+            get
+            {
+                GLWindowRenderingMode mode = (GLWindowRenderingMode)Interop.GLWindow.GlWindowGetRenderingMode(SwigCPtr);
+                if (NDalicPINVOKE.SWIGPendingException.Pending) throw new InvalidOperationException("FATAL: get Exception", NDalicPINVOKE.SWIGPendingException.Retrieve());
+                return mode;
+            }
+            [EditorBrowsable(EditorBrowsableState.Never)]
+            set
+            {
+                Interop.GLWindow.GlWindowSetRenderingMode(SwigCPtr, (int)value);
+                if (NDalicPINVOKE.SWIGPendingException.Pending) throw NDalicPINVOKE.SWIGPendingException.Retrieve();
+            }
+        }
+
+        /// <summary>
         /// Dispose for Window
         /// </summary>
         protected override void Dispose(DisposeTypes type)
