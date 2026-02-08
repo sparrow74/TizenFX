@@ -119,5 +119,16 @@ namespace Tizen.NUI
         {
             return !operand1.Equals(operand2);
         }
+
+        /// <summary>
+        /// Gets the current screen information.
+        /// </summary>
+        /// <returns>The current screen information.</returns>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static ScreenInformation Get()
+        {
+            // 임시 구현: 실제 화면 정보를 가져오는 로직으로 대체해야 합니다.
+            return new ScreenInformation("DefaultScreen", 1920, 1080);
+        }
     }
 }

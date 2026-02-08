@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns="http://tizen.org/ns/packages" api-version="7" package="org.tizen.example.NUICoreTest" version="1.0.0">
+  <profile name="common" />
+  <ui-application appid="org.tizen.example.NUICoreTest"
+                  exec="NUICoreTest.dll"
+                  type="dotnet-nui"
+                  multiple="false"
+                  taskmanage="true"
+                  nodisplay="false"
+                  launch_mode="single">
+    <label>NUICoreTest</label>
+    <icon>NUI.png</icon>
+    <metadata key="http://tizen.org/metadata/prefer_dotnet_aot" value="true" />
+  </ui-application>
+  <shortcut-list />
+  <dependencies />
+  <provides-appdefined-privileges />
+</manifest>
